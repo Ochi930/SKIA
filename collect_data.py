@@ -45,7 +45,7 @@ with DATA_PATH.open("a", newline="", encoding="utf-8") as file:
     if not file_exists:
         writer.writerow(columns)
 
-    camera = cv2.VideoCapture(0)
+    camera = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 
     if not camera.isOpened():
         print("Could not open webcam.")

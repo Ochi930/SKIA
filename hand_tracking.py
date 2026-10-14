@@ -28,7 +28,7 @@ options = HandLandmarkerOptions(
     num_hands=2
 )
 
-camera = cv2.VideoCapture(0)
+camera = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 
 if not camera.isOpened():
     print("ERROR: Could not open webcam.")
