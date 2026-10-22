@@ -1,16 +1,24 @@
 
 import joblib
 from pathlib import Path
+from typing import TypedDict, cast
 
 import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import (
     accuracy_score,
-    classification_report,
+    classification_report,  # pyright: ignore[reportUnknownVariableType]  # sklearn's union return has unknown dict types
     confusion_matrix,
 )
 
 MODEL_PATH = Path("models/hand_shape_model.pkl")
 VALIDATION_PATH = Path("data/hand_shapes_validation.csv")
+
+
+class ModelArtifact(TypedDict):
+    model: RandomForestClassifier
+    feature_columns: list[str]
+
 
 # Check that both files exist.
 if not MODEL_PATH.exists():
@@ -22,7 +30,7 @@ if not VALIDATION_PATH.exists():
     )
 
 # Load the existing model. This script does not retrain it.
-saved_data = joblib.load(MODEL_PATH)
+saved_data = cast(ModelArtifact, joblib.load(MODEL_PATH))
 
 model = saved_data["model"]
 feature_columns = saved_data["feature_columns"]
@@ -88,14 +96,16 @@ print(
 print(f"Incorrect predictions: {(y_true != y_pred).sum()}")
 
 print("\n========== CLASSIFICATION REPORT ==========")
-print(
+report = cast(
+    str,
     classification_report(
         y_true,
         y_pred,
         labels=expected_labels,
         zero_division=0,
-    )
+    ),
 )
+print(report)
 
 print("\n========== CONFUSION MATRIX ==========")
 print("Rows = actual labels; columns = predicted labels")
